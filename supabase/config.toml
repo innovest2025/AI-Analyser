@@ -1,1 +1,19 @@
 project_id = "pjwjticuefefpkvifoln"
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["https://localhost:3000"]
+jwt_expiry = 3600
+
+[auth.email]
+enable_signup = true
+
+[functions.risk-analysis]
+verify_jwt = false
+
+[functions.trend-prediction]
+verify_jwt = false
+
+[functions.data-sync]
+verify_jwt = false

@@ -1,18 +1,74 @@
 import { MetricCard } from './MetricCard';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
-import { AlertTriangle, TrendingUp, Users, Shield } from 'lucide-react';
-import { mockStateMetrics } from '@/lib/mockData';
+import { AlertTriangle, TrendingUp, Users, Shield, Database, Loader2 } from 'lucide-react';
+import { useSupabaseData } from '@/hooks/useSupabaseData';
+import { useRiskAnalysis } from '@/hooks/useRiskAnalysis';
+import { useState } from 'react';
 
 interface StateOverviewProps {
   onDistrictSelect?: (district: string) => void;
 }
 
 export function StateOverview({ onDistrictSelect }: StateOverviewProps) {
-  const metrics = mockStateMetrics;
+  const { getStateMetrics, refreshData } = useSupabaseData();
+  const { syncData, loading: syncLoading } = useRiskAnalysis();
+  const [syncing, setSyncing] = useState(false);
+  
+  const metrics = getStateMetrics();
+
+  const handleDataSync = async () => {
+    setSyncing(true);
+    const result = await syncData('sync_all');
+    if (result) {
+      // Refresh the data after sync
+      await refreshData();
+    }
+    setSyncing(false);
+  };
+
+  // Mock trend data since we don't have historical data yet
+  const trendData = [
+    { month: 'Oct', red: 12, amber: 25, green: 180 },
+    { month: 'Nov', red: 15, amber: 22, green: 175 },
+    { month: 'Dec', red: 18, amber: 28, green: 165 },
+    { month: 'Jan', red: metrics.redAlerts, amber: metrics.amberAlerts, green: metrics.greenUnits }
+  ];
 
   return (
     <div className="space-y-6">
+      {/* Data Sync Section */}
+      <Card className="bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-semibold mb-1">AI-Powered Risk Monitoring System</h3>
+              <p className="text-sm text-muted-foreground">
+                Sync data and enable AI analysis powered by OpenAI
+              </p>
+            </div>
+            <Button 
+              onClick={handleDataSync} 
+              disabled={syncing || syncLoading}
+              className="ml-4"
+            >
+              {syncing || syncLoading ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Syncing...
+                </>
+              ) : (
+                <>
+                  <Database className="h-4 w-4 mr-2" />
+                  Sync Data
+                </>
+              )}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard
           title="Total Units"
@@ -65,8 +121,8 @@ export function StateOverview({ onDistrictSelect }: StateOverviewProps) {
             <CardTitle>Alert Trends (Last 4 Months)</CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={metrics.trendData}>
+             <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={trendData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
                 <YAxis />

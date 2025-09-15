@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { RiskBadge } from './RiskBadge';
+import { AIAnalysis } from './AIAnalysis';
 import { Unit } from '@/types';
 import { Calendar, TrendingDown, AlertCircle, FileText } from 'lucide-react';
 import { useState } from 'react';
@@ -180,6 +181,8 @@ export function UnitDetails({ unit, onBack }: UnitDetailsProps) {
           </CardContent>
         </Card>
       </div>
+
+      <AIAnalysis unit={unit} />
     </div>
   );
 }

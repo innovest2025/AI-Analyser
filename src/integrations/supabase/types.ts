@@ -14,7 +14,204 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      ai_analysis: {
+        Row: {
+          analysis_type: string
+          confidence_score: number | null
+          created_at: string
+          id: string
+          prompt: string
+          response: string
+          unit_id: string
+        }
+        Insert: {
+          analysis_type: string
+          confidence_score?: number | null
+          created_at?: string
+          id?: string
+          prompt: string
+          response: string
+          unit_id: string
+        }
+        Update: {
+          analysis_type?: string
+          confidence_score?: number | null
+          created_at?: string
+          id?: string
+          prompt?: string
+          response?: string
+          unit_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_analysis_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "units"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      alert_history: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          message: string | null
+          severity: string
+          type: string
+          unit_id: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          id?: string
+          message?: string | null
+          severity: string
+          type: string
+          unit_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          message?: string | null
+          severity?: string
+          type?: string
+          unit_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alert_history_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "units"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      district_stats: {
+        Row: {
+          amber_count: number | null
+          avg_risk_score: number | null
+          green_count: number | null
+          id: string
+          name: string
+          red_count: number | null
+          sla_compliance: number | null
+          total_units: number | null
+          updated_at: string
+        }
+        Insert: {
+          amber_count?: number | null
+          avg_risk_score?: number | null
+          green_count?: number | null
+          id?: string
+          name: string
+          red_count?: number | null
+          sla_compliance?: number | null
+          total_units?: number | null
+          updated_at?: string
+        }
+        Update: {
+          amber_count?: number | null
+          avg_risk_score?: number | null
+          green_count?: number | null
+          id?: string
+          name?: string
+          red_count?: number | null
+          sla_compliance?: number | null
+          total_units?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      shap_drivers: {
+        Row: {
+          created_at: string
+          feature: string
+          id: string
+          impact: number
+          unit_id: string
+          value: string
+        }
+        Insert: {
+          created_at?: string
+          feature: string
+          id?: string
+          impact: number
+          unit_id: string
+          value: string
+        }
+        Update: {
+          created_at?: string
+          feature?: string
+          id?: string
+          impact?: number
+          unit_id?: string
+          value?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shap_drivers_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "units"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      units: {
+        Row: {
+          arrears: number | null
+          created_at: string
+          disconnect_flag: boolean | null
+          district: string
+          id: string
+          kwh_consumption: number[] | null
+          last_updated: string
+          name: string
+          peer_percentile: number | null
+          risk_score: number
+          service_no: string
+          tier: string
+          updated_at: string
+          urn: string
+        }
+        Insert: {
+          arrears?: number | null
+          created_at?: string
+          disconnect_flag?: boolean | null
+          district: string
+          id?: string
+          kwh_consumption?: number[] | null
+          last_updated?: string
+          name: string
+          peer_percentile?: number | null
+          risk_score?: number
+          service_no: string
+          tier: string
+          updated_at?: string
+          urn: string
+        }
+        Update: {
+          arrears?: number | null
+          created_at?: string
+          disconnect_flag?: boolean | null
+          district?: string
+          id?: string
+          kwh_consumption?: number[] | null
+          last_updated?: string
+          name?: string
+          peer_percentile?: number | null
+          risk_score?: number
+          service_no?: string
+          tier?: string
+          updated_at?: string
+          urn?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

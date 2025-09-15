@@ -3,7 +3,7 @@ import { Header } from '@/components/Header';
 import { StateOverview } from '@/components/StateOverview';
 import { DistrictView } from '@/components/DistrictView';
 import { UnitDetails } from '@/components/UnitDetails';
-import { mockUnits } from '@/lib/mockData';
+import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { Unit } from '@/types';
 
 type ViewState = 
@@ -13,6 +13,7 @@ type ViewState =
 
 const Index = () => {
   const [viewState, setViewState] = useState<ViewState>({ type: 'state' });
+  const { units, loading, error, getUnitsByDistrict } = useSupabaseData();
 
   const handleDistrictSelect = (district: string) => {
     setViewState({ type: 'district', district });
@@ -33,8 +34,40 @@ const Index = () => {
   };
 
   const getDistrictUnits = (district: string) => {
-    return mockUnits.filter(unit => unit.district === district);
+    return getUnitsByDistrict(district);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="container mx-auto px-4 py-6">
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+              <p className="text-muted-foreground">Loading risk monitoring data...</p>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="container mx-auto px-4 py-6">
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <p className="text-destructive mb-2">Error loading data</p>
+              <p className="text-muted-foreground text-sm">{error}</p>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
