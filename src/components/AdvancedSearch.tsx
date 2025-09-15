@@ -315,9 +315,9 @@ export function AdvancedSearch() {
               <div className="space-y-2">
                 <Label>Connection Status</Label>
                 <Select 
-                  value={filters.disconnectFlag === undefined ? '' : (filters.disconnectFlag ? 'disconnected' : 'active')}
+                  value={filters.disconnectFlag === undefined ? 'all' : (filters.disconnectFlag ? 'disconnected' : 'active')}
                   onValueChange={(value) => {
-                    if (value === '') {
+                    if (value === 'all') {
                       setFilters({ ...filters, disconnectFlag: undefined });
                     } else {
                       setFilters({ ...filters, disconnectFlag: value === 'disconnected' });
@@ -328,7 +328,7 @@ export function AdvancedSearch() {
                     <SelectValue placeholder="All" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All</SelectItem>
+                    <SelectItem value="all">All</SelectItem>
                     <SelectItem value="active">Active</SelectItem>
                     <SelectItem value="disconnected">Disconnected</SelectItem>
                   </SelectContent>
