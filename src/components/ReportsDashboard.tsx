@@ -108,22 +108,22 @@ export function ReportsDashboard() {
         body: { action: 'export', reportId, userId: user.id }
       });
 
-      // Create download link
-      const blob = new Blob([response.data], { type: 'text/csv' });
+      // Create download link for professional submission-ready report
+      const blob = new Blob([response.data], { type: 'application/json' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `${title.replace(/[^a-z0-9]/gi, '_')}.csv`;
+      a.download = `${title.replace(/[^a-z0-9]/gi, '_')}_OFFICIAL_SUBMISSION.json`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
 
-      await logActivity('export_report', `Exported report: ${title}`);
+      await logActivity('export_report', `Exported official report: ${title}`);
       
       toast({
-        title: 'Export Complete',
-        description: 'Report has been downloaded successfully',
+        title: 'Official Report Downloaded',
+        description: 'Professional submission-ready report has been downloaded',
       });
     } catch (error) {
       console.error('Error exporting report:', error);
@@ -292,7 +292,7 @@ export function ReportsDashboard() {
                       className="flex-1"
                     >
                       <Download className="h-4 w-4 mr-2" />
-                      Export CSV
+                      Official Report
                     </Button>
                   )}
                   
