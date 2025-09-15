@@ -44,8 +44,8 @@ export function Analytics() {
       red: districtUnits.filter(u => u.tier === 'RED').length,
       amber: districtUnits.filter(u => u.tier === 'AMBER').length,
       green: districtUnits.filter(u => u.tier === 'GREEN').length,
-      avgRisk: totalUnits > 0 ? districtUnits.reduce((sum, u) => sum + u.riskScore, 0) / totalUnits : 0,
-      totalArrears: districtUnits.reduce((sum, u) => sum + (u.arrears || 0), 0)
+      avgRisk: totalUnits > 0 ? districtUnits.reduce((sum, u) => sum + Number(u.riskScore ?? 0), 0) / totalUnits : 0,
+      totalArrears: districtUnits.reduce((sum, u) => sum + Number(u.arrears ?? 0), 0)
     };
   });
 

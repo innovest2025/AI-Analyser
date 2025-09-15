@@ -27,18 +27,18 @@ export const useSupabaseData = () => {
         name: unit.name,
         district: unit.district,
         serviceNo: unit.service_no,
-        riskScore: unit.risk_score,
+        riskScore: Number(unit.risk_score ?? 0),
         tier: unit.tier as Unit['tier'],
         lastUpdated: unit.last_updated,
-        kwhConsumption: unit.kwh_consumption || [],
-        arrears: unit.arrears || 0,
-        disconnectFlag: unit.disconnect_flag || false,
+        kwhConsumption: (unit.kwh_consumption || []).map((n: any) => Number(n) ?? 0),
+        arrears: Number(unit.arrears ?? 0),
+        disconnectFlag: Boolean(unit.disconnect_flag),
         shapDrivers: (unit.shap_drivers || []).map((driver: any) => ({
           feature: driver.feature,
-          impact: driver.impact,
+          impact: Number(driver.impact ?? 0),
           value: driver.value
         })),
-        peerPercentile: unit.peer_percentile || 50,
+        peerPercentile: Number(unit.peer_percentile ?? 50),
         alertHistory: (unit.alert_history || []).map((alert: any) => ({
           date: alert.date,
           type: alert.type,
@@ -65,12 +65,12 @@ export const useSupabaseData = () => {
       // Transform data to match existing DistrictStats interface
       const transformedStats: DistrictStats[] = (data || []).map(stat => ({
         name: stat.name,
-        redCount: stat.red_count,
-        amberCount: stat.amber_count,
-        greenCount: stat.green_count,
-        totalUnits: stat.total_units,
-        avgRiskScore: stat.avg_risk_score,
-        slaCompliance: stat.sla_compliance
+        redCount: Number(stat.red_count ?? 0),
+        amberCount: Number(stat.amber_count ?? 0),
+        greenCount: Number(stat.green_count ?? 0),
+        totalUnits: Number(stat.total_units ?? 0),
+        avgRiskScore: Number(stat.avg_risk_score ?? 0),
+        slaCompliance: Number(stat.sla_compliance ?? 100)
       }));
 
       setDistrictStats(transformedStats);
