@@ -12,6 +12,7 @@ import NotFound from "./pages/NotFound";
 import { ReportsDashboard } from "./components/ReportsDashboard";
 import { AdvancedSearch } from "./components/AdvancedSearch";
 import { FileManager } from "./components/FileManager";
+import { Analytics } from "./components/Analytics";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,7 @@ const App = () => (
                       <Route path="/search" element={<AdvancedSearch />} />
                       <Route path="/reports" element={<ReportsDashboard />} />
                       <Route path="/files" element={<FileManager />} />
+                      <Route path="/analytics" element={<Analytics />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </main>
