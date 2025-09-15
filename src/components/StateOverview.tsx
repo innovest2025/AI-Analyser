@@ -12,11 +12,33 @@ interface StateOverviewProps {
 }
 
 export function StateOverview({ onDistrictSelect }: StateOverviewProps) {
-  const { getStateMetrics, refreshData } = useSupabaseData();
+  const { units, getStateMetrics, refreshData } = useSupabaseData();
   const { syncData, loading: syncLoading } = useRiskAnalysis();
   const [syncing, setSyncing] = useState(false);
   
-  const metrics = getStateMetrics();
+  // Calculate district data from units instead of using empty district_stats
+  const districts = [...new Set(units.map(u => u.district))];
+  const districtData = districts.map(district => {
+    const districtUnits = units.filter(u => u.district === district);
+    const totalUnits = districtUnits.length;
+    return {
+      name: district,
+      totalUnits: totalUnits,
+      redCount: districtUnits.filter(u => u.tier === 'RED').length,
+      amberCount: districtUnits.filter(u => u.tier === 'AMBER').length,
+      greenCount: districtUnits.filter(u => u.tier === 'GREEN').length,
+      avgRiskScore: totalUnits > 0 ? Number((districtUnits.reduce((sum, u) => sum + Number(u.riskScore ?? 0), 0) / totalUnits).toFixed(1)) : 0,
+      slaCompliance: 95 // Mock SLA compliance for now
+    };
+  });
+
+  const metrics = {
+    totalUnits: units.length,
+    redAlerts: units.filter(u => u.tier === 'RED').length,
+    amberAlerts: units.filter(u => u.tier === 'AMBER').length,
+    greenUnits: units.filter(u => u.tier === 'GREEN').length,
+    districts: districtData
+  };
 
   const handleDataSync = async () => {
     setSyncing(true);
