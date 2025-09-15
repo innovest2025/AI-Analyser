@@ -1,8 +1,20 @@
-import { Shield, Bell, User } from 'lucide-react';
+import { Shield, Bell, User, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { NotificationCenter } from './NotificationCenter';
+import { useAuth } from '@/hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 export function Header() {
+  const { user, profile, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/auth');
+  };
+
   return (
     <header className="border-b bg-card">
       <div className="container mx-auto px-4 py-4">
@@ -18,14 +30,41 @@ export function Header() {
           </div>
           
           <div className="flex items-center gap-4">
-            <Button variant="outline" size="sm" className="relative">
-              <Bell className="h-4 w-4" />
-              <Badge className="absolute -top-2 -right-2 h-5 w-5 p-0 text-xs">3</Badge>
-            </Button>
-            <Button variant="outline" size="sm">
-              <User className="h-4 w-4 mr-2" />
-              Officer Dashboard
-            </Button>
+            <NotificationCenter />
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="gap-2">
+                  <User className="h-4 w-4" />
+                  {profile?.display_name || user?.email || 'User'}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>
+                  <div>
+                    <p className="font-medium">{profile?.display_name || 'User'}</p>
+                    <p className="text-xs text-muted-foreground">{user?.email}</p>
+                    {profile?.role && (
+                      <Badge variant="secondary" className="mt-1 text-xs">
+                        {profile.role.charAt(0).toUpperCase() + profile.role.slice(1)}
+                      </Badge>
+                    )}
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate('/reports')}>
+                  Reports Dashboard
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate('/profile')}>
+                  Profile Settings
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>

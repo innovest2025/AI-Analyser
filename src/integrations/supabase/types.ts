@@ -126,6 +126,161 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          metadata: Json | null
+          read_at: string | null
+          sent_email: boolean | null
+          sent_sms: boolean | null
+          severity: string
+          title: string
+          type: string
+          unit_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          metadata?: Json | null
+          read_at?: string | null
+          sent_email?: boolean | null
+          sent_sms?: boolean | null
+          severity: string
+          title: string
+          type: string
+          unit_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          metadata?: Json | null
+          read_at?: string | null
+          sent_email?: boolean | null
+          sent_sms?: boolean | null
+          severity?: string
+          title?: string
+          type?: string
+          unit_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "units"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          department: string | null
+          display_name: string | null
+          district_access: string[] | null
+          email_notifications: boolean | null
+          id: string
+          phone_number: string | null
+          role: string
+          sms_notifications: boolean | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          department?: string | null
+          display_name?: string | null
+          district_access?: string[] | null
+          email_notifications?: boolean | null
+          id: string
+          phone_number?: string | null
+          role?: string
+          sms_notifications?: boolean | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          department?: string | null
+          display_name?: string | null
+          district_access?: string[] | null
+          email_notifications?: boolean | null
+          id?: string
+          phone_number?: string | null
+          role?: string
+          sms_notifications?: boolean | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      reports: {
+        Row: {
+          created_at: string
+          data: Json
+          description: string | null
+          expires_at: string | null
+          file_url: string | null
+          filters: Json | null
+          generated_at: string | null
+          generated_by: string | null
+          id: string
+          report_type: string
+          scheduled_for: string | null
+          status: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          data: Json
+          description?: string | null
+          expires_at?: string | null
+          file_url?: string | null
+          filters?: Json | null
+          generated_at?: string | null
+          generated_by?: string | null
+          id?: string
+          report_type: string
+          scheduled_for?: string | null
+          status?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          description?: string | null
+          expires_at?: string | null
+          file_url?: string | null
+          filters?: Json | null
+          generated_at?: string | null
+          generated_by?: string | null
+          id?: string
+          report_type?: string
+          scheduled_for?: string | null
+          status?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reports_generated_by_fkey"
+            columns: ["generated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       shap_drivers: {
         Row: {
           created_at: string
@@ -211,6 +366,57 @@ export type Database = {
           urn?: string
         }
         Relationships: []
+      }
+      user_activities: {
+        Row: {
+          action: string
+          created_at: string
+          description: string | null
+          id: string
+          ip_address: unknown | null
+          metadata: Json | null
+          unit_id: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          ip_address?: unknown | null
+          metadata?: Json | null
+          unit_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          ip_address?: unknown | null
+          metadata?: Json | null
+          unit_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_activities_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "units"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_activities_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

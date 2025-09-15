@@ -4,7 +4,10 @@ import { StateOverview } from '@/components/StateOverview';
 import { DistrictView } from '@/components/DistrictView';
 import { UnitDetails } from '@/components/UnitDetails';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
+import { useAuth } from '@/hooks/useAuth';
 import { Unit } from '@/types';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 type ViewState = 
   | { type: 'state' }
@@ -14,6 +17,32 @@ type ViewState =
 const Index = () => {
   const [viewState, setViewState] = useState<ViewState>({ type: 'state' });
   const { units, loading, error, getUnitsByDistrict } = useSupabaseData();
+  const { user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
+
+  // Redirect to auth if not logged in
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate('/auth');
+    }
+  }, [user, authLoading, navigate]);
+
+  // Show loading while checking auth
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render if user is not logged in
+  if (!user) {
+    return null;
+  }
 
   const handleDistrictSelect = (district: string) => {
     setViewState({ type: 'district', district });

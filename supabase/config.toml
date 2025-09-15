@@ -17,3 +17,12 @@ verify_jwt = false
 
 [functions.data-sync]
 verify_jwt = false
+
+[functions.notifications]
+verify_jwt = false
+
+[functions.reports]
+verify_jwt = false
+
+[functions.user-activities]
+verify_jwt = false
