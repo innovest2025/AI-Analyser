@@ -444,7 +444,7 @@ Risk Distribution:
 - AMBER: ${units.filter(u => u.tier === 'AMBER').length}  
 - GREEN: ${units.filter(u => u.tier === 'GREEN').length}
 
-Average Risk Score: ${(units.reduce((sum, u) => sum + u.risk_score, 0) / units.length).toFixed(2)}
+Average Risk Score: ${(units.reduce((sum, u) => sum + (Number(u.risk_score) || 0), 0) / Math.max(units.length, 1)).toFixed(2)}
 
 Top Risk Districts: ${[...new Set(units.filter(u => u.tier === 'RED').map(u => u.district))].slice(0, 5).join(', ')}
 
@@ -469,59 +469,16 @@ Provide 3-4 key insights and actionable recommendations for TANGEDCO operations 
     });
 
     if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status}`);
+      console.error('OpenAI API error:', response.status, await response.text());
+      return 'AI insights unavailable';
     }
 
     const data = await response.json();
-    
-    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-      throw new Error('Unexpected OpenAI API response structure');
-    }
-    
-    return data.choices[0].message.content || 'No insights generated';
-  } catch (error) {
+    const content = data?.choices?.[0]?.message?.content;
+    return content || 'AI insights unavailable';
+  } catch (error: any) {
     console.error('Error generating AI insights:', error);
-    return `AI insights generation failed: ${error.message}`;
-  }
-}
-
-  const prompt = `Analyze this electricity consumer risk data for ${period} insights:
-
-Total Units: ${units.length}
-Risk Distribution:
-- RED: ${units.filter(u => u.tier === 'RED').length}
-- AMBER: ${units.filter(u => u.tier === 'AMBER').length}  
-- GREEN: ${units.filter(u => u.tier === 'GREEN').length}
-
-Average Risk Score: ${(units.reduce((sum, u) => sum + u.risk_score, 0) / units.length).toFixed(2)}
-
-Top Risk Districts: ${[...new Set(units.filter(u => u.tier === 'RED').map(u => u.district))].slice(0, 5).join(', ')}
-
-Provide 3-4 key insights and actionable recommendations for TANGEDCO operations team.`;
-
-  try {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: 'You are an AI expert in electricity distribution analytics. Provide concise, actionable insights.' },
-          { role: 'user', content: prompt }
-        ],
-        max_tokens: 500,
-        temperature: 0.3,
-      }),
-    });
-
-    const data = await response.json();
-    return data.choices[0].message.content;
-  } catch (error) {
-    console.error('Error generating AI insights:', error);
-    return 'AI insights generation failed';
+    return `AI insights generation failed: ${error?.message || 'unknown error'}`;
   }
 }
 
