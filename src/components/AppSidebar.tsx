@@ -62,7 +62,6 @@ export function AppSidebar() {
 
   return (
     <Sidebar className={state === 'collapsed' ? "w-16" : "w-64"}>
-    >
       <SidebarContent>
         <div className="p-4 border-b">
           <div className="flex items-center gap-2">
