@@ -126,6 +126,65 @@ export type Database = {
         }
         Relationships: []
       }
+      files: {
+        Row: {
+          bucket_id: string
+          created_at: string
+          description: string | null
+          file_path: string
+          file_size: number
+          id: string
+          is_processed: boolean | null
+          metadata: Json | null
+          mime_type: string
+          original_name: string
+          processed_at: string | null
+          tags: string[] | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bucket_id: string
+          created_at?: string
+          description?: string | null
+          file_path: string
+          file_size: number
+          id?: string
+          is_processed?: boolean | null
+          metadata?: Json | null
+          mime_type: string
+          original_name: string
+          processed_at?: string | null
+          tags?: string[] | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bucket_id?: string
+          created_at?: string
+          description?: string | null
+          file_path?: string
+          file_size?: number
+          id?: string
+          is_processed?: boolean | null
+          metadata?: Json | null
+          mime_type?: string
+          original_name?: string
+          processed_at?: string | null
+          tags?: string[] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "files_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           created_at: string

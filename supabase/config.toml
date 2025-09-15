@@ -26,3 +26,12 @@ verify_jwt = false
 
 [functions.user-activities]
 verify_jwt = false
+
+[functions.send-email]
+verify_jwt = false
+
+[functions.file-manager]
+verify_jwt = false
+
+[functions.advanced-search]
+verify_jwt = false
