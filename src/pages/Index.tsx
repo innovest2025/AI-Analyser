@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Header } from '@/components/Header';
 import { StateOverview } from '@/components/StateOverview';
 import { DistrictView } from '@/components/DistrictView';
 import { UnitDetails } from '@/components/UnitDetails';
@@ -68,68 +67,55 @@ const Index = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
-        <Header />
-        <main className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-center h-64">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-              <p className="text-muted-foreground">Loading risk monitoring data...</p>
-            </div>
-          </div>
-        </main>
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading risk monitoring data...</p>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-background">
-        <Header />
-        <main className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-center h-64">
-            <div className="text-center">
-              <p className="text-destructive mb-2">Error loading data</p>
-              <p className="text-muted-foreground text-sm">{error}</p>
-            </div>
-          </div>
-        </main>
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <p className="text-destructive mb-2">Error loading data</p>
+          <p className="text-muted-foreground text-sm">{error}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <main className="container mx-auto px-4 py-6">
-        {viewState.type === 'state' && (
-          <div>
-            <div className="mb-6">
-              <h1 className="text-3xl font-bold mb-2">State Risk Overview</h1>
-              <p className="text-muted-foreground">
-                Comprehensive electricity consumer risk monitoring across Tamil Nadu districts
-              </p>
-            </div>
-            <StateOverview onDistrictSelect={handleDistrictSelect} />
+    <div>
+      {viewState.type === 'state' && (
+        <div>
+          <div className="mb-6">
+            <h1 className="text-3xl font-bold mb-2">State Risk Overview</h1>
+            <p className="text-muted-foreground">
+              Comprehensive electricity consumer risk monitoring across Tamil Nadu districts
+            </p>
           </div>
-        )}
-        
-        {viewState.type === 'district' && (
-          <DistrictView
-            district={viewState.district}
-            units={getDistrictUnits(viewState.district)}
-            onUnitSelect={handleUnitSelect}
-            onBack={handleBackToState}
-          />
-        )}
-        
-        {viewState.type === 'unit' && (
-          <UnitDetails
-            unit={viewState.unit}
-            onBack={handleBackToDistrict}
-          />
-        )}
-      </main>
+          <StateOverview onDistrictSelect={handleDistrictSelect} />
+        </div>
+      )}
+      
+      {viewState.type === 'district' && (
+        <DistrictView
+          district={viewState.district}
+          units={getDistrictUnits(viewState.district)}
+          onUnitSelect={handleUnitSelect}
+          onBack={handleBackToState}
+        />
+      )}
+      
+      {viewState.type === 'unit' && (
+        <UnitDetails
+          unit={viewState.unit}
+          onBack={handleBackToDistrict}
+        />
+      )}
     </div>
   );
 };
