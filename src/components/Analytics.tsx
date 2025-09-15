@@ -33,20 +33,24 @@ export function Analytics() {
     ? filteredUnits.reduce((sum, unit) => sum + unit.riskScore, 0) / totalUnits 
     : 0;
 
-  // District breakdown
+  // District breakdown - calculated from units data
   const districts = [...new Set(units.map(u => u.district))];
   const districtData = districts.map(district => {
     const districtUnits = units.filter(u => u.district === district);
+    const totalUnits = districtUnits.length;
     return {
       name: district,
-      total: districtUnits.length,
+      total: totalUnits,
       red: districtUnits.filter(u => u.tier === 'RED').length,
       amber: districtUnits.filter(u => u.tier === 'AMBER').length,
       green: districtUnits.filter(u => u.tier === 'GREEN').length,
-      avgRisk: districtUnits.reduce((sum, u) => sum + u.riskScore, 0) / districtUnits.length || 0,
+      avgRisk: totalUnits > 0 ? districtUnits.reduce((sum, u) => sum + u.riskScore, 0) / totalUnits : 0,
       totalArrears: districtUnits.reduce((sum, u) => sum + (u.arrears || 0), 0)
     };
   });
+
+  console.log('Units data:', units);
+  console.log('District data:', districtData);
 
   // Risk tier distribution
   const tierData = [
