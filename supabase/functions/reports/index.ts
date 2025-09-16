@@ -455,7 +455,10 @@ Provide 3-4 key insights and actionable recommendations for TANGEDCO operations 
 }
 
 async function generateExecutiveSummaryAI(reportType: string, data: any): Promise<string> {
-  if (!openAIApiKey) return generateExecutiveSummary(reportType, data);
+  if (!openAIApiKey) {
+    console.log('OpenAI API key not configured, using fallback');
+    return generateExecutiveSummary(reportType, data);
+  }
 
   const prompt = `Generate a professional executive summary for this ${reportType} report:
   
@@ -470,7 +473,10 @@ Write a comprehensive executive summary suitable for TANGEDCO management and reg
 }
 
 async function generateRecommendationsAI(data: any): Promise<string[]> {
-  if (!openAIApiKey) return generateRecommendations(data);
+  if (!openAIApiKey) {
+    console.log('OpenAI API key not configured, using fallback recommendations');
+    return generateRecommendations(data);
+  }
 
   const prompt = `Based on this electricity distribution risk data, generate specific actionable recommendations:
 
@@ -893,13 +899,24 @@ function generateStatisticalValidation(data: any): any {
 async function generateDocxReport(report: any): Promise<Uint8Array> {
   const reportData = report.data;
   
-  // Generate AI-enhanced content for the report
-  const [aiExecutiveSummary, aiRecommendations, aiRiskAssessment, aiTechnicalAnalysis] = await Promise.all([
-    generateExecutiveSummaryAI(report.report_type, reportData),
-    generateRecommendationsAI(reportData),
-    generateRiskAssessmentAI(reportData),
-    generateTechnicalAnalysisAI(report.report_type, reportData)
-  ]);
+  // Generate AI-enhanced content with fallback handling
+  let aiExecutiveSummary, aiRecommendations, aiRiskAssessment, aiTechnicalAnalysis;
+  
+  try {
+    [aiExecutiveSummary, aiRecommendations, aiRiskAssessment, aiTechnicalAnalysis] = await Promise.all([
+      generateExecutiveSummaryAI(report.report_type, reportData).catch(() => generateExecutiveSummary(report.report_type, reportData)),
+      generateRecommendationsAI(reportData).catch(() => generateRecommendations(reportData)),
+      generateRiskAssessmentAI(reportData).catch(() => calculateOverallRiskAssessment(reportData)),
+      generateTechnicalAnalysisAI(report.report_type, reportData).catch(() => 'Technical analysis based on system metrics and performance indicators.')
+    ]);
+  } catch (error) {
+    console.error('Error generating AI content, using fallbacks:', error);
+    // Use fallback content if AI generation fails
+    aiExecutiveSummary = generateExecutiveSummary(report.report_type, reportData);
+    aiRecommendations = generateRecommendations(reportData);
+    aiRiskAssessment = calculateOverallRiskAssessment(reportData);
+    aiTechnicalAnalysis = 'Technical analysis based on system metrics and performance indicators.';
+  }
 
   const doc = new Document({
     sections: [{
