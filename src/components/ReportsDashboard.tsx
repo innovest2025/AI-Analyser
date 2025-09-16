@@ -292,7 +292,7 @@ export function ReportsDashboard() {
                       className="flex-1"
                     >
                       <Download className="h-4 w-4 mr-2" />
-                      Official Report
+                  Official DOCX Report
                     </Button>
                   )}
                   
