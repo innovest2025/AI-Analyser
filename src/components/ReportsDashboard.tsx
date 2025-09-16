@@ -108,56 +108,28 @@ export function ReportsDashboard() {
         body: { action: 'export', reportId, userId: user.id }
       });
 
-      // Handle DOCX binary response
-      if (response.data instanceof ArrayBuffer || response.data instanceof Uint8Array) {
-        // Direct binary data
-        const blob = new Blob([response.data], { 
-          type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' 
-        });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${title.replace(/[^a-z0-9]/gi, '_')}_official_submission.docx`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-      } else {
-        // Handle base64 or other response formats
-        let binaryData;
-        if (typeof response.data === 'string') {
-          // If it's a base64 string, decode it
-          const base64Data = response.data.replace(/^data:.*,/, '');
-          binaryData = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
-        } else {
-          // Convert response to binary
-          binaryData = new Uint8Array(response.data);
-        }
-        
-        const blob = new Blob([binaryData], { 
-          type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' 
-        });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${title.replace(/[^a-z0-9]/gi, '_')}_official_submission.docx`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-      }
+      // Handle CSV response
+      const blob = new Blob([response.data], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${title.replace(/[^a-z0-9]/gi, '_')}_report.csv`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
 
-      await logActivity('export_report', `Exported official DOCX report: ${title}`);
+      await logActivity('export_report', `Exported CSV report: ${title}`);
       
       toast({
-        title: 'Official DOCX Report Downloaded',
-        description: 'Professional submission-ready Word document has been downloaded',
+        title: 'CSV Report Downloaded',
+        description: 'Professional CSV report has been downloaded',
       });
     } catch (error) {
       console.error('Error exporting report:', error);
       toast({
         title: 'Export Failed',
-        description: 'Failed to export DOCX report',
+        description: 'Failed to export CSV report',
         variant: 'destructive'
       });
     }
@@ -320,7 +292,7 @@ export function ReportsDashboard() {
                       className="flex-1"
                     >
                       <Download className="h-4 w-4 mr-2" />
-                  Official DOCX Report
+                  Export CSV Report
                     </Button>
                   )}
                   
